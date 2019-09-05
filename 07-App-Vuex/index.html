@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Principios de Vue</title>
+    <!-- Importación de los estilos de Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <!-- Elemento que será accesible desde Vue. -->
+    <div class="container my-5" id="app">
+        <padre></padre>
+    </div>
+    <!-- Importación de Vue desde el CDN. -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!-- Importación de Vuex desde el CDN. -->
+    <script src="https://unpkg.com/vuex@3.1.1/dist/vuex.js"></script>
+
+    <!-- Importación de los componentes de Vue -->
+    <script src="componentes/padre.js"></script>
+    <script src="componentes/hijo.js"></script>
+
+    <!-- Importación del script donde se realizan las operaciones del ejemplo. -->
+    <script>
+        // Instancia de Vuex.
+        const store = new Vuex.Store({
+
+            // [store] Sirve para declarar las variables globales.
+            state: {
+                numero: 1,
+                cursos: []
+            },
+
+            // [mutations] Sirve para declarar los métodos globales.
+
+            mutations: {
+                // Opcionalmente se puede pasar [state] como parámetro en los métodos
+                // declarados en mutations, para ahorrarse el uso del [this].
+                aumentar(state) {
+                    state.numero++;
+                },
+                disminuir(state, cantidad) {
+                    state.numero -= cantidad;
+                },
+                llenarCursos(state, cursosAccion) {
+                    state.cursos = cursosAccion;
+                }
+            },
+
+            // [actions] Sirve para declarar los métodos globales que requieran acceder al backend.
+            actions: {
+
+                // Se crea una función asíncrona.
+                obtenerCursos: async function({
+                    commit
+                }) {
+
+                    // Se crea una constante que almacenará los datos de la consulta.
+                    const data = await fetch('cursos.json');
+
+                    // Se crea una constante que almacenará los resultados de la consulta.
+                    const cursos = await data.json();
+
+                    // A través del [commit] se llama al método para llenar los cursos,
+                    // y se le mandan los valores obtenidos en la consulta cómo parámetro.
+                    commit('llenarCursos', cursos);
+                }
+            }
+        });
+
+        // Instancia de Vue.
+        const app = new Vue({
+            el: '#app',
+
+            // Se importa el store de Vuex en el de Vue.
+            store: store
+        });
+    </script>
+
+    <!-- Importación de los scripts de Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+
+</html>
